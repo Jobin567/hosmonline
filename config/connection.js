@@ -5,7 +5,7 @@ const state = {
 };
 
 module.exports.connect = async function (done) {
-    const url = 'mongodb://localhost:27017';
+    const url = 'mongodb://127.0.0.1:27017';
     const dbName = 'shopping';
 
     try {
