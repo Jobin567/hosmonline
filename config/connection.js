@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
 
 const state = {
     db: null
@@ -9,10 +9,16 @@ module.exports.connect = async function (done) {
     const dbName = 'shopping';
 
     try {
-        const client = await MongoClient.connect(url,{ useUnifiedTopology: true });
+        const client = await MongoClient.connect(url, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
+
         state.db = client.db(dbName);
+        console.log('MongoDB connected successfully');
         done();
     } catch (err) {
+        console.error('MongoDB connection error:', err);
         done(err);
     }
 };
@@ -20,4 +26,5 @@ module.exports.connect = async function (done) {
 module.exports.get = function () {
     return state.db;
 };
+
 
