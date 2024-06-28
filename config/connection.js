@@ -9,7 +9,7 @@ module.exports.connect = async function (done) {
     const dbName = 'shopping';
 
     try {
-        const client = await MongoClient.connect(url,{ useUnifiedTopology: true });
+        const client = await MongoClient.connect(url);
         state.db = client.db(dbName);
         done();
     } catch (err) {
@@ -20,5 +20,4 @@ module.exports.connect = async function (done) {
 module.exports.get = function () {
     return state.db;
 };
-
 
