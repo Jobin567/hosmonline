@@ -11,7 +11,8 @@ module.exports.connect = async function (done) {
     try {
         const client = await MongoClient.connect(url, {
             useNewUrlParser: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000,
         });
 
         state.db = client.db(dbName);
