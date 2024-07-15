@@ -19,11 +19,11 @@ module.exports = {
 
     getAllProducts: async () => {
         try {
-            let products = await db.get()
+            let product = await db.get()
                 .collection(collection.PRODUCT_COLLECTION)
                 .find()
                 .toArray();
-            return products;
+            return product;
         } catch (err) {
             console.error('Error fetching products:', err);
             return []; // or throw error as needed
