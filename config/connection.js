@@ -8,7 +8,7 @@ const state = {
 };
 
 module.exports.connect = function(done) {
-    const url = 'mongodb://localhost:27017';
+    const url = process.env.MONGODB_URI; // Use environment variable for MongoDB URI
     const dbname = 'shopping';
 
     MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
@@ -17,7 +17,7 @@ module.exports.connect = function(done) {
 
         // Initialize MongoDBStore for session storage
         state.store = new MongoDBStore({
-            uri: url + '/' + dbname,
+            uri: url,
             collection: 'sessions' // Collection name to store sessions
         });
 
@@ -32,4 +32,3 @@ module.exports.get = function() {
 module.exports.getSessionStore = function() {
     return state.store;
 };
-
