@@ -21,5 +21,4 @@ module.exports.get = function () {
     return state.db;
 };
 
-    return state.db
-}
+   
