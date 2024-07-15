@@ -1,34 +1,25 @@
 const MongoClient = require('mongodb').MongoClient;
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 
 const state = {
-    db: null,
-    store: null
+    db: null
 };
 
-module.exports.connect = function(done) {
-    const url = process.env.MONGODB_URI; // Use environment variable for MongoDB URI
-    const dbname = 'shopping';
+module.exports.connect = async function (done) {
+    const url = 'mongodb://127.0.0.1:27017';
+    const dbName = 'shopping';
 
-    MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
-        if (err) return done(err);
-        state.db = client.db(dbname);
-
-        // Initialize MongoDBStore for session storage
-        state.store = new MongoDBStore({
-            uri: url,
-            collection: 'sessions' // Collection name to store sessions
-        });
-
+    try {
+        const client = await MongoClient.connect(url);
+        state.db = client.db(dbName);
         done();
-    });
+    } catch (err) {
+        done(err);
+    }
 };
 
-module.exports.get = function() {
+module.exports.get = function () {
     return state.db;
 };
 
-module.exports.getSessionStore = function() {
-    return state.store;
-};
+
+
