@@ -1,31 +1,25 @@
-const { MongoClient } = require('mongodb');
+require('dotenv').config()
+const mongoClient=require('mongodb').MongoClient
 
-const state = {
-    db: null
-};
+const state={
+    db:null
+}
 
-module.exports.connect = async function (done) {
-    const url = 'mongodb://localhost:27017';
-    const dbName = 'shopping';
-
-    try {
-        const client = await MongoClient.connect(url, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-        });
-
-        state.db = client.db(dbName);
-        console.log('MongoDB connected successfully');
-        done();
-    } catch (err) {
-        console.error('MongoDB connection error:', err);
-        done(err);
-    }
-};
-
-module.exports.get = function () {
-    return state.db;
-};
+module.exports.connect=function(done){
+    const url=`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@cluster0.qvpmm.mongodb.net/shopping?retryWrites=true&w=majority`
+    // const url = 'mongodb://localhost:27017';
+    const dbname='shopping'
 
 
+    mongoClient.connect(url,function(err,data){
+        if(err) return done(err)
+        state.db=data.db(dbname)
+        done()
+    })
+
+    
+}
+
+module.exports.get=function(){
+    return state.db
+}
