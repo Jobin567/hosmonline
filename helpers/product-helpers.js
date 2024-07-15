@@ -4,8 +4,7 @@ const { ObjectID } = require('mongodb');
 
 module.exports = {
     addProduct: (product, callback) => {
-        db.get()
-            .collection(collection.PRODUCT_COLLECTION)
+        db.get().collection(collection.PRODUCT_COLLECTION)
             .insertOne(product)
             .then((data) => {
                 console.log('Product added:', data.ops[0]);
@@ -13,51 +12,53 @@ module.exports = {
             })
             .catch((err) => {
                 console.error('Error adding product:', err);
-                callback(null); // or handle error as needed
+                callback(null); // Handle error as needed
             });
     },
 
-    getAllProducts: async () => {
-        try {
-            let product = await db.get()
-                .collection(collection.PRODUCT_COLLECTION)
-                .find()
-                .toArray();
-            return product;
-        } catch (err) {
-            console.error('Error fetching products:', err);
-            return []; // or throw error as needed
-        }
+    getAllProducts: () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let products = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray();
+                resolve(products);
+            } catch (err) {
+                console.error('Error fetching products:', err);
+                reject(err); // Propagate error
+            }
+        });
     },
 
-    deleteProduct: async (prodId) => {
-        try {
-            let response = await db.get()
-                .collection(collection.PRODUCT_COLLECTION)
-                .deleteOne({ _id: ObjectID(prodId) });
-            return response;
-        } catch (err) {
-            console.error('Error deleting product:', err);
-            throw err; // or handle error as needed
-        }
+    deleteProduct: (prodId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION)
+                .deleteOne({ _id: ObjectID(prodId) })
+                .then((response) => {
+                    resolve(response);
+                })
+                .catch((err) => {
+                    console.error('Error deleting product:', err);
+                    reject(err); // Propagate error
+                });
+        });
     },
 
-    getProductDetails: async (prodId) => {
-        try {
-            let product = await db.get()
-                .collection(collection.PRODUCT_COLLECTION)
-                .findOne({ _id: ObjectID(prodId) });
-            return product;
-        } catch (err) {
-            console.error('Error fetching product details:', err);
-            throw err; // or handle error as needed
-        }
+    getProductDetails: (prodId) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION)
+                .findOne({ _id: ObjectID(prodId) })
+                .then((product) => {
+                    resolve(product);
+                })
+                .catch((err) => {
+                    console.error('Error fetching product details:', err);
+                    reject(err); // Propagate error
+                });
+        });
     },
 
-    updateProduct: async (proId, proDetails) => {
-        try {
-            let response = await db.get()
-                .collection(collection.PRODUCT_COLLECTION)
+    updateProduct: (proId, proDetails) => {
+        return new Promise((resolve, reject) => {
+            db.get().collection(collection.PRODUCT_COLLECTION)
                 .updateOne(
                     { _id: ObjectID(proId) },
                     {
@@ -68,13 +69,14 @@ module.exports = {
                             Category: proDetails.Category,
                         },
                     }
-                );
-            return response;
-        } catch (err) {
-            console.error('Error updating product:', err);
-            throw err; // or handle error as needed
-        }
+                )
+                .then((response) => {
+                    resolve();
+                })
+                .catch((err) => {
+                    console.error('Error updating product:', err);
+                    reject(err); // Propagate error
+                });
+        });
     },
 };
-
-   
