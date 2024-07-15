@@ -1,24 +1,19 @@
 const MongoClient = require('mongodb').MongoClient;
-
 const state = {
     db: null
 };
 
-module.exports.connect = async function (done) {
-    const url = 'mongodb://127.0.0.1:27017';
-    const dbName = 'shopping';
+module.exports.connect = function(done) {
+    const url = 'mongodb://localhost:27017';
+    const dbname = 'shopping';
 
-    try {
-        const client = await MongoClient.connect(url);
-        state.db = client.db(dbName);
+    MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }, (err, client) => {
+        if (err) return done(err);
+        state.db = client.db(dbname);
         done();
-    } catch (err) {
-        done(err);
-    }
+    });
 };
 
-module.exports.get = function () {
+module.exports.get = function() {
     return state.db;
-};
-
-   
+}
