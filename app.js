@@ -1,34 +1,49 @@
+
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var fileUpload=require('express-fileupload')
+const env=require("dotenv");
+
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
-var hbs = require('express-handlebars');
+var hbs=require("express-handlebars")
 var app = express();
-var db=require('./config/connection')
-var session=require('express-session')
-const nocache=require("nocache")
 
+
+
+
+var db=require("./config/connection")
+env.config();
+
+var fileUpload=require("express-fileupload")
+ 
+
+var session=require("express-session");
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
-app.engine('hbs',hbs.engine ({extname:'hbs',defaultLayout:'layout',layoutsDir:__dirname+'/views/layout/',partialDir:__dirname+'/views/partials/'}))
+app.engine('hbs',hbs({extname:'hbs',defaultLayout:'layout',layoutsDir:__dirname+'/views/layout/',partialsDir:__dirname+'/views/partials/'}))
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(fileUpload());
-app.use(nocache ());
-app.use(session({secret:"Key",cookie:{maxAge:1200000},resave: false,
-    saveUninitialized: false}))
-db.connect((err)=>{
-  if(err) console.log("Connection Error"+err);
-  else console.log("Database Connected to port 27017");
+app.use(fileUpload())
+app.use(session({secret:"Key",cookie:{maxAge:600000}}))
+
+db.connect(function(err){
+  if(err){
+    console.log(" DataBase Connection Error"+err);
+  }
+  else{
+    console.log("Database connected");
+  }
 })
+
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
 
@@ -49,3 +64,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
