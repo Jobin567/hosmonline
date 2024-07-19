@@ -9,7 +9,7 @@ const env=require("dotenv");
 
 var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
-var hbs=require("express-handlebars")
+var hbs=require("handlebars")
 var app = express();
 
 
